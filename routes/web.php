@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\Admin\CartController as AdminCartController;
 use App\Http\Controllers\Admin\MainController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\Users\LoginController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\MenuController as ControllersMenuController;
+use App\Http\Controllers\ProductController as ControllersProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('admin/users/login', [LoginController::class, 'index'])->name('login');
 Route::post('admin/users/login/store', [LoginController::class, 'store']);
 
+#Admin
 Route::middleware(['auth'])->group(function () {
 
     Route::prefix('admin')->group(function () {
@@ -65,8 +70,23 @@ Route::middleware(['auth'])->group(function () {
 
         #Upload file image
         Route::post('upload/services', [UploadController::class, 'store']);
+
+        #Cart
+        Route::get('customers', [AdminCartController::class, 'index']);
+        Route::get('customers/view/{customer}', [AdminCartController::class, 'show']);
     });
 });
 
+#Client
 Route::get('/', [App\Http\Controllers\MainController::class, 'index']);
 Route::post('/services/load-product', [App\Http\Controllers\MainController::class, 'loadProduct']);
+
+Route::get('danh-muc/{id}-{slug}.html', [ControllersMenuController::class, 'index']);
+Route::get('san-pham/{id}-{slug}.html', [ControllersProductController::class, 'index']);
+
+Route::post('add-cart', [CartController::class, 'index']);
+Route::get('carts', [CartController::class, 'show']);
+Route::post('update-cart', [CartController::class, 'update']);
+Route::get('carts/delete/{id}', [CartController::class, 'remove']);
+Route::post('carts', [CartController::class, 'addCart']);
+
